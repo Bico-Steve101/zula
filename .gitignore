@@ -1,0 +1,27 @@
+# IntelliJ IDEA project files
+.idea/
+*.iml
+
+# VS Code project files
+.vscode/
+
+# Maven build output
+target/
+
+# Logs
+*.log
+
+# OS-specific files
+.DS_Store        # macOS
+Thumbs.db        # Windows
+
+# Temporary files
+*.swp
+*.tmp
+*.bak
+
+# Java-specific
+*.class
+
+# Other common ignores
+/out/

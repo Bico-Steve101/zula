@@ -9,5 +9,5 @@ Automated RabbitMQ queue management for Zula microservices.
 <dependency>
     <groupId>com.zula</groupId>
     <artifactId>zula</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.3</version>
 </dependency>
