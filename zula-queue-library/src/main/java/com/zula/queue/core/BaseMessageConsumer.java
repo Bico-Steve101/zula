@@ -3,10 +3,14 @@ package com.zula.queue.core;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Lazy;
+
+import javax.annotation.PostConstruct;
 
 public abstract class BaseMessageConsumer<T> {
 
     @Autowired
+    @Lazy
     private QueueManager queueManager;
 
     @Value("${spring.application.name:unknown-service}")
@@ -22,20 +26,19 @@ public abstract class BaseMessageConsumer<T> {
         this.messageType = customMessageType.toLowerCase();
     }
 
-    @Autowired
+    @PostConstruct
     public void init() {
         queueManager.createServiceQueue(serviceName, messageType);
         System.out.println("Zula: " + getClass().getSimpleName() + " listening on " + serviceName + "." + messageType);
     }
 
-    @RabbitListener(queues = "#{'${spring.application.name:unknown-service}' + '.' + @baseMessageConsumerTargetQueue}")
+    @RabbitListener(queues = "#{'${spring.application.name:unknown-service}' + '.' + targetQueue()}")
     public void handleMessage(T message) {
         System.out.println("Zula: " + getClass().getSimpleName() + " received " + messageType + " message");
         processMessage(message);
     }
 
-    @org.springframework.context.annotation.Bean
-    public String baseMessageConsumerTargetQueue() {
+    protected String targetQueue() {
         return this.messageType;
     }
 
