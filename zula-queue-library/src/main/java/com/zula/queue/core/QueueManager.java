@@ -1,12 +1,15 @@
 package com.zula.queue.core;
 
 import com.zula.queue.config.QueueProperties;
-import org.springframework.amqp.core.*;
+import jakarta.annotation.PostConstruct;
+import org.springframework.amqp.core.Binding;
+import org.springframework.amqp.core.BindingBuilder;
+import org.springframework.amqp.core.Queue;
+import org.springframework.amqp.core.TopicExchange;
 import org.springframework.amqp.rabbit.core.RabbitAdmin;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -26,8 +29,8 @@ public class QueueManager {
 
     @PostConstruct
     public void init() {
-        System.out.println("🚀 Zula Queue Manager initialized");
-        System.out.println("✅ Auto-create queues: " + properties.isAutoCreateQueues());
+        System.out.println("Zula Queue Manager initialized");
+        System.out.println("Auto-create queues: " + properties.isAutoCreateQueues());
     }
 
     public void createServiceQueue(String serviceName, String messageType) {
@@ -47,7 +50,7 @@ public class QueueManager {
             TopicExchange exchange = new TopicExchange(exchangeName, true, false);
             rabbitAdmin.declareExchange(exchange);
             createdExchanges.add(exchangeName);
-            System.out.println("📡 Zula: Created exchange: " + exchangeName);
+            System.out.println("Zula: Created exchange: " + exchangeName);
         }
     }
 
@@ -62,7 +65,7 @@ public class QueueManager {
             rabbitAdmin.declareBinding(binding);
 
             createdQueues.add(queueName);
-            System.out.println("📨 Zula: Created queue: " + queueName);
+            System.out.println("Zula: Created queue: " + queueName);
         }
     }
 
