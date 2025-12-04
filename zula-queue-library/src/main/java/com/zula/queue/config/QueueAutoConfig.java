@@ -43,4 +43,32 @@ public class QueueAutoConfig {
     public MessagePublisher messagePublisher(QueueManager queueManager, RabbitTemplate rabbitTemplate) {
         return new MessagePublisher(queueManager, rabbitTemplate);
     }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public com.zula.queue.core.CommandPublisher commandPublisher(MessagePublisher messagePublisher) {
+        return new com.zula.queue.core.CommandPublisher(messagePublisher);
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public com.zula.queue.core.MessageHandlerRegistry messageHandlerRegistry(QueueManager queueManager,
+                                                                             org.springframework.amqp.rabbit.connection.ConnectionFactory connectionFactory,
+                                                                             com.fasterxml.jackson.databind.ObjectMapper objectMapper,
+                                                                             org.springframework.core.env.Environment environment) {
+        return new com.zula.queue.core.MessageHandlerRegistry(queueManager, connectionFactory, objectMapper, environment);
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public MessageQueueInitializer messageQueueInitializer(QueueManager queueManager,
+                                                           org.springframework.core.env.Environment environment) {
+        return new MessageQueueInitializer(queueManager, environment);
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public com.zula.queue.core.CommandHandlerRegistry commandHandlerRegistry(com.zula.queue.core.MessageHandlerRegistry messageHandlerRegistry) {
+        return new com.zula.queue.core.CommandHandlerRegistry(messageHandlerRegistry);
+    }
 }

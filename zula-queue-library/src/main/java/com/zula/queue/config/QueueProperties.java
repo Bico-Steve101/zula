@@ -28,4 +28,5 @@ public class QueueProperties {
 
     public boolean isAutoDeleteQueues() { return autoDeleteQueues; }
     public void setAutoDeleteQueues(boolean autoDeleteQueues) { this.autoDeleteQueues = autoDeleteQueues; }
+
 }

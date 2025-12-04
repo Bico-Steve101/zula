@@ -1,6 +1,8 @@
 package com.zula.queue.core;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.zula.queue.core.ZulaCommand;
+import com.zula.queue.core.ZulaMessage;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
@@ -86,6 +88,17 @@ public abstract class BaseMessageConsumer<T> {
                 String className = actualType.getTypeName();
 
                 String simpleName = className.substring(className.lastIndexOf('.') + 1);
+                if (actualType instanceof Class<?>) {
+                    Class<?> clazz = (Class<?>) actualType;
+                    ZulaCommand commandAnnotation = clazz.getAnnotation(ZulaCommand.class);
+                    if (commandAnnotation != null && !commandAnnotation.commandType().isEmpty()) {
+                        return commandAnnotation.commandType().toLowerCase();
+                    }
+                    ZulaMessage messageAnnotation = clazz.getAnnotation(ZulaMessage.class);
+                    if (messageAnnotation != null && !messageAnnotation.messageType().isEmpty()) {
+                        return messageAnnotation.messageType().toLowerCase();
+                    }
+                }
                 return convertClassNameToMessageType(simpleName);
             }
         } catch (Exception e) {
@@ -118,6 +131,9 @@ public abstract class BaseMessageConsumer<T> {
     }
 
     private String convertClassNameToMessageType(String className) {
+        if (className.endsWith("Command")) {
+            return className.substring(0, className.length() - "Command".length()).toLowerCase();
+        }
         if (className.endsWith("Message")) {
             return className.substring(0, className.length() - 7).toLowerCase();
         }
